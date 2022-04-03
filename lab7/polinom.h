@@ -1,5 +1,5 @@
-#ifndef LAB6_POLINOM_H_
-#define LAB6_POLINOM_H_
+#ifndef LAB7_POLINOM_H_
+#define LAB7_POLINOM_H_
 
 #include <cstdint>
 #include <memory>
@@ -37,4 +37,4 @@ private:
     std::unique_ptr<data_type[]> data = std::make_unique<data_type[]>(1);
 };
 
-#endif // LAB6_POLINOM_H_
+#endif // LAB7_POLINOM_H_
