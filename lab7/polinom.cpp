@@ -108,3 +108,16 @@ Polinom::differentiate() const
     }
     return res;
 }
+
+std::ostream& operator<<(std::ostream& out, const Polinom& p) {
+    std::uint32_t unknown_counter = 0;
+    for (const auto& el : p) {
+        if (!el) {
+            out << 'x' << std::to_string(unknown_counter) << ' ';
+            unknown_counter++;
+            continue;
+        }
+        out << *el << ' ';
+    }
+    return out;
+}

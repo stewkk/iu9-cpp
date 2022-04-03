@@ -37,4 +37,6 @@ private:
     std::unique_ptr<data_type[]> data = std::make_unique<data_type[]>(1);
 };
 
+std::ostream& operator<<(std::ostream&, const Polinom&);
+
 #endif // LAB7_POLINOM_H_
