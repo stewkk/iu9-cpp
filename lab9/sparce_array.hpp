@@ -4,8 +4,10 @@
 #include <concepts>
 #include <iostream>
 #include <ranges>
+#include <algorithm>
 #include <stdexcept>
 #include <unordered_map>
+#include <iterator>
 
 namespace lab9 {
 
@@ -69,8 +71,9 @@ SparceArray<T> SparceArray<T>::operator()(key_t l, key_t r) const
     if (l > r) {
         throw std::range_error("SparceArray<T>::operator()");
     }
-    auto elems = map | std::views::filter([&l, &r](const auto& el) -> bool { return el.first >= l && el.first <= r; });
-    return container_t(std::ranges::begin(elems), std::ranges::end(elems));
+    auto res = container_t();
+    std::ranges::copy_if(map, std::inserter(res, res.end()), [&l, &r](auto x){return x.first >= l && x.first <= r;});
+    return res;
 }
 
 template <std::default_initializable T>
