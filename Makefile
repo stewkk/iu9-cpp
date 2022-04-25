@@ -2,9 +2,9 @@ CC=g++
 CFLAGS= -g -std=c++20 -Wall -Wextra -O2 -pedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion \
 		-Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align \
 		-fsanitize=address -fsanitize=undefined
-CDEBUGFLAGS= -g -std=c++20 -Wall -Wextra -O0 -pedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion
+CDEBUGFLAGS= -g -std=c++20 -Wall -Wextra -Og -pedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion
 task=test
-sources := $(wildcard *.cpp)
+sources := $(wildcard *.cpp) $(wildcard *.hpp)
 headers := $(wildcard *.h)
 
 all: run
@@ -18,9 +18,10 @@ a: $(sources) $(headers)
 	$(CC) $(CFLAGS) $(sources) -o a
 
 debug: d
+	gdb --tui --silent ./d
 
 d: $(sources) $(headers)
-	$(CC) $(CDEBUGFLAGS) $(sources) -o d && gdb --tui --silent ./d
+	$(CC) $(CDEBUGFLAGS) $(sources) -o d
 
 format: $(sources) $(headers)
 	clang-format -i --style=WebKit $(sources) $(headers)
