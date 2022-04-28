@@ -1,99 +1,43 @@
 #ifndef LAB9_SPARCE_ARRAY_HPP_
 #define LAB9_SPARCE_ARRAY_HPP_
 
+#include <algorithm>
 #include <concepts>
 #include <iostream>
-#include <ranges>
-#include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <unordered_map>
-#include <iterator>
 
 namespace lab9 {
 
 template <std::default_initializable T>
-class SparceArray;
-
-template <std::default_initializable T>
-bool operator==(const SparceArray<T>& lhs, const SparceArray<T>& rhs);
-
-template <std::default_initializable T>
-std::ostream& operator<<(std::ostream& out, const SparceArray<T>& arr);
-
-template <std::default_initializable T>
-class SparceArray {
+class SparceArray : public std::unordered_map<std::size_t, T> {
 public:
     using key_t = std::size_t;
-    using container_t = std::unordered_map<key_t, T>;
+    using std::unordered_map<key_t, T>::unordered_map;
 
-private:
-    container_t map;
+    SparceArray operator()(key_t l, key_t r) const
+    {
+        if (l > r) {
+            throw std::range_error("SparceArray::operator()");
+        }
+        auto res = SparceArray();
+        std::ranges::copy_if(*this, std::inserter(res, res.end()), [&l, &r](auto x) { return x.first >= l && x.first <= r; });
+        return res;
+    }
 
-public:
-    SparceArray() = default;
-    SparceArray(const container_t&);
-
-    T& operator[](std::size_t idx);
-    const T& operator[](std::size_t idx) const;
-    SparceArray operator()(key_t l, key_t r) const;
-
-    friend bool operator==<>(const SparceArray& lhs, const SparceArray& rhs);
-    friend std::ostream& operator<<<>(std::ostream& out, const SparceArray& arr);
+    friend std::ostream& operator<<(std::ostream& out, const SparceArray& arr)
+    {
+        std::string delimeter = " ";
+        out << '{';
+        for (auto&& [key, value] : arr) {
+            out << delimeter << key << ":" << value;
+            delimeter = ", ";
+        }
+        out << " }";
+        return out;
+    }
 };
-
-template <std::default_initializable T>
-using key_t = typename SparceArray<T>::key_t;
-
-template <std::default_initializable T>
-using container_t = typename SparceArray<T>::container_t;
-
-template <std::default_initializable T>
-SparceArray<T>::SparceArray(const container_t& inputMap)
-    : map(inputMap)
-{
-}
-
-template <std::default_initializable T>
-T& SparceArray<T>::operator[](std::size_t idx)
-{
-    return map[idx];
-}
-
-template <std::default_initializable T>
-const T& SparceArray<T>::operator[](std::size_t idx) const
-{
-    return map[idx];
-}
-
-template <std::default_initializable T>
-SparceArray<T> SparceArray<T>::operator()(key_t l, key_t r) const
-{
-    if (l > r) {
-        throw std::range_error("SparceArray<T>::operator()");
-    }
-    auto res = container_t();
-    std::ranges::copy_if(map, std::inserter(res, res.end()), [&l, &r](auto x){return x.first >= l && x.first <= r;});
-    return res;
-}
-
-template <std::default_initializable T>
-bool operator==(const SparceArray<T>& lhs, const SparceArray<T>& rhs)
-{
-    return lhs.map == rhs.map;
-}
-
-template <std::default_initializable T>
-std::ostream& operator<<(std::ostream& out, const SparceArray<T>& arr)
-{
-    std::string delimeter = " ";
-    out << '{';
-    for (auto&& [key, value] : arr.map) {
-        out << delimeter << key << ":" << value;
-        delimeter = ", ";
-    }
-    out << " }";
-    return out;
-}
 
 }; // lab9
 

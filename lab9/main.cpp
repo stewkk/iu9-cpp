@@ -12,13 +12,14 @@ int main()
         /* lab9::SparceArray<T> arr; */
     }
     {
-        lab9::SparceArray<std::string> arr;
-        arr[0] = "abcd";
-        arr[2] = "degh";
-        arr[4] = "abcd";
-        arr[5] = "abcd";
-        arr[6] = "degh";
-        arr[7] = "degh";
+        lab9::SparceArray<std::string> arr = {
+            { 0, "a" },
+            { 2, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" },
+            { 7, "f" },
+        };
 
         auto subarr = arr(3, 6);
         std::cout << arr << '\n'
