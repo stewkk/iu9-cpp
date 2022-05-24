@@ -1,0 +1,39 @@
+CC=g++
+CFLAGS= -g -std=c++17 -Wall -Wextra -O2 -pedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion \
+		-Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align \
+		-fsanitize=address -fsanitize=undefined
+CDEBUGFLAGS= -g -std=c++17 -Wall -Wextra -Og -pedantic -Wshadow -Wformat=2 -Wfloat-equal -Wconversion
+task=test
+sources := $(wildcard *.cpp) $(wildcard *.hpp)
+headers := $(wildcard *.h)
+
+all: run
+
+run: build
+	./lab12
+
+build: lab12
+
+lab12: $(sources) $(headers)
+	$(CC) $(CFLAGS) $(sources) -o lab12
+
+debug: d
+	gdb --tui --silent ./d
+
+d: $(sources) $(headers)
+	$(CC) $(CDEBUGFLAGS) $(sources) -o d
+
+format: $(sources) $(headers)
+	clang-format -i --style=WebKit $(sources) $(headers)
+
+test:
+	echo "NOT IMPLEMENTED"
+
+clean:
+	-{ find -regex '.*/a'; find -regex '.*/d'; find -regex '.*/\.ccls-cache'; } | xargs rm -r
+
+create:
+	mkdir $(task) && cd $(task) && ln -sr ../Makefile ./ && touch main.cpp
+
+.PHONY: all create build run debug clean test format
+
